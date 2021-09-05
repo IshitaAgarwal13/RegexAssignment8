@@ -1,0 +1,153 @@
+mysql> use school;
+Database changed
+mysql> show tables;
++------------------+
+| Tables_in_school |
++------------------+
+| department       |
+| employee         |
+| fees             |
+| india            |
+| student          |
+| students         |
+| user             |
+| users            |
++------------------+
+8 rows in set (0.00 sec)
+
+mysql> describe department;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| dept_id   | int(12)     | NO   | PRI | NULL    |       |
+| dept_name | varchar(20) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+2 rows in set (0.08 sec)
+
+mysql> describe employee;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| eid     | int(20)     | NO   | PRI | NULL    |       |
+| ename   | varchar(25) | YES  |     | NULL    |       |
+| salary  | int(20)     | YES  |     | NULL    |       |
+| dept_id | int(20)     | YES  | MUL | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+4 rows in set (0.07 sec)
+
+mysql> select * from department;
++---------+-------------+
+| dept_id | dept_name   |
++---------+-------------+
+|       1 | development |
+|       2 | testing     |
+|       3 | electrical  |
+|       4 | production  |
+|       5 | marketing   |
+|       6 | mechanical  |
++---------+-------------+
+6 rows in set (0.00 sec)
+
+mysql> select * from employee;
++-----+-----------+--------+---------+
+| eid | ename     | salary | dept_id |
++-----+-----------+--------+---------+
+| 101 | Arham     |   2000 |       1 |
+| 102 | Sahil     |   7000 |       5 |
+| 103 | Riya      |   2500 |       2 |
+| 104 | Khushi    |   5500 |       3 |
+| 105 | Ishita    |   1500 |       4 |
+| 106 | Shreyansh |   4000 |       5 |
+| 107 | Natasha   |   6800 |       1 |
+| 108 | Nikhil    |  10000 |       2 |
+| 109 | Mitaansh  |   1000 |       3 |
++-----+-----------+--------+---------+
+9 rows in set (0.00 sec)
+
+                                                    ::Questions::
+                                                    
+                                                    
+1. Display the employee name, employee id, salary, dept_id and department name for all the employees.
+
+mysql> select e.eid as Emp_id,e.ename as Emp_name,e.salary,e.dept_id,d.dept_name from employee e inner join department d on e.dept_id=d.dept_id;
++--------+-----------+--------+---------+-------------+
+| Emp_id | Emp_name  | salary | dept_id | dept_name   |
++--------+-----------+--------+---------+-------------+
+|    101 | Arham     |   2000 |       1 | development |
+|    107 | Natasha   |   6800 |       1 | development |
+|    103 | Riya      |   2500 |       2 | testing     |
+|    108 | Nikhil    |  10000 |       2 | testing     |
+|    104 | Khushi    |   5500 |       3 | electrical  |
+|    109 | Mitaansh  |   1000 |       3 | electrical  |
+|    105 | Ishita    |   1500 |       4 | production  |
+|    102 | Sahil     |   7000 |       5 | marketing   |
+|    106 | Shreyansh |   4000 |       5 | marketing   |
++--------+-----------+--------+---------+-------------+
+9 rows in set (0.00 sec)
+
+
+
+
+2. Query to find average salaries of all the departments
+
+mysql> select d.dept_name,avg(e.salary) from employee e inner join department d on e.dept_id=d.dept_id group by d.dept_name;
++-------------+---------------+
+| dept_name   | avg(e.salary) |
++-------------+---------------+
+| development |     4400.0000 |
+| electrical  |     3250.0000 |
+| marketing   |     5500.0000 |
+| production  |     1500.0000 |
+| testing     |     6250.0000 |
++-------------+---------------+
+5 rows in set (0.00 sec)
+
+
+
+
+3. Query to display all the  employees with their department names whose salary is above 3000
+
+mysql> select e.ename as Emp_name,d.dept_name from employee e inner join department d on e.dept_id=d.dept_id where e.salary>3000;
++-----------+-------------+
+| Emp_name  | dept_name   |
++-----------+-------------+
+| Natasha   | development |
+| Nikhil    | testing     |
+| Khushi    | electrical  |
+| Sahil     | marketing   |
+| Shreyansh | marketing   |
++-----------+-------------+
+5 rows in set (0.00 sec)
+
+
+
+4. Query to display the average salaries of all the employees who works as developer.
+
+mysql> select avg(e.salary) as average_salary from employee e left join department d on e.dept_id=d.dept_id where d.dept_name="development";
++----------------+
+| average_salary |
++----------------+
+|      4400.0000 |
++----------------+
+1 row in set (0.00 sec)
+
+
+
+
+5. Query to list the employee name, employee id, salary and department name in the ascending order of their salaries.
+
+mysql> select e.eid as Emp_id,e.ename as Emp_name,e.salary,d.dept_name from employee e left join department d on e.dept_id=d.dept_id order by e.salary asc;
++--------+-----------+--------+-------------+
+| Emp_id | Emp_name  | salary | dept_name   |
++--------+-----------+--------+-------------+
+|    109 | Mitaansh  |   1000 | electrical  |
+|    105 | Ishita    |   1500 | production  |
+|    101 | Arham     |   2000 | development |
+|    103 | Riya      |   2500 | testing     |
+|    106 | Shreyansh |   4000 | marketing   |
+|    104 | Khushi    |   5500 | electrical  |
+|    107 | Natasha   |   6800 | development |
+|    102 | Sahil     |   7000 | marketing   |
+|    108 | Nikhil    |  10000 | testing     |
++--------+-----------+--------+-------------+
+9 rows in set (0.00 sec)
